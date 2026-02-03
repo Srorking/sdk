@@ -15,7 +15,7 @@
   }]);
 
   // ✅ config (collectUrl + optional plugins)
-  q.push(["config", {"collectUrl":"https://coll"}]);
+  q.push(["config", {"collectUrl":"https://collect-api-yzug.onrender.com/collect","plugins":{"ads":true,"search":true}}]);
 
   var d = document;
   var s = d.createElement("script");
