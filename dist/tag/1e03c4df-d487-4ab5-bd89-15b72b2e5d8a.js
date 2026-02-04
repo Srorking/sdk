@@ -2,42 +2,27 @@
   var w = window;
   var q = (w._ptq = w._ptq || []);
 
-  var tagVersion = "0.2.2";
-
   var cs = document.currentScript;
-  if (!cs) {
-    var scripts = document.getElementsByTagName("script");
-    cs = scripts[scripts.length - 1];
-  }
-
   var base = "";
   if (cs && cs.src) {
-    var src = cs.src;
-    base = src.split("/tag/")[0];
-
-    try {
-      var qs = src.split("?")[1] || "";
-      if (qs) {
-        var sp = new URLSearchParams(qs);
-        var v = sp.get("v") || sp.get("tagVersion");
-        if (v) tagVersion = v;
-      }
-    } catch (e) {}
+    base = cs.src.split("/tag/")[0];
   }
 
   q.push(["__meta", {
     project_id: "1e03c4df-d487-4ab5-bd89-15b72b2e5d8a",
     cdnBase: base,
-    tagVersion: tagVersion
+    tagVersion: "0.2.2"
   }]);
 
-  // ✅ config (collectUrl + optional plugins)
-  q.push(["config", {"collectUrl":"https://collect-api-yzug.onrender.com/collect","plugins":{"ads":true,"search":true}}]);
+  // ✅ config (collectUrl already includes siteId + optional plugins)
+  q.push(["config", {"collectUrl":"https://collect-api-yzug.onrender.com/collect?siteId=1e03c4df-d487-4ab5-bd89-15b72b2e5d8a","plugins":{"ads":true,"search":true}}]);
 
   var d = document;
   var s = d.createElement("script");
   s.async = true;
-  s.src = base + "/core/sdk.min.js?v=" + encodeURIComponent(tagVersion);
+
+  // ✅ always bust SDK cache by version
+  s.src = base + "/core/sdk.min.js?v=" + encodeURIComponent("0.2.2");
 
   var h = d.getElementsByTagName("script")[0];
   h.parentNode.insertBefore(s, h);
