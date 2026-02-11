@@ -15,7 +15,7 @@
   }]);
 
   // ✅ config (collectUrl + plugins + optional debug/includeQueryHash/sampleRate)
-  q.push(["config", {"collectUrl":"https://collect-api-yzug.onrender.com/collect","plugins":{"cards":true,"ads":true,"search":true}}]);
+  q.push(["config", {"collectUrl":"https://collect-api-yzug.onrender.com/collect","plugins":{"cards":true,"ads":true,"search":true,"checkout":true}}]);
 
   var d = document;
   var s = d.createElement("script");
