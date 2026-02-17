@@ -14,7 +14,6 @@
     tagVersion: "0.2.2"
   }]);
 
-  // ✅ config (collectUrl + plugins + optional debug/includeQueryHash/sampleRate)
   q.push(["config", {"collectUrl":"https://collect-api-yzug.onrender.com/collect","plugins":{"cards":true,"ads":true,"search":true,"checkout":true}}]);
 
   var d = document;
