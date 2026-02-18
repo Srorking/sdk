@@ -25,11 +25,13 @@
     h.parentNode.insertBefore(s, h);
   }
 
-  // ✅ Gate BEFORE downloading SDK (bootstrap from CDN base, not collectUrl)
+  // ✅ Gate BEFORE downloading SDK (bootstrap from Collect API)
   try {
     if (!w.fetch) return;
 
-    var BOOT = base + "/bootstrap?pid=" + encodeURIComponent("1e03c4df-d487-4ab5-bd89-15b72b2e5d8a");
+    var collectUrl = "https://collect-api-yzug.onrender.com/collect";
+    var bootBase = collectUrl.replace(/\/collect\/?$/, "");
+    var BOOT = bootBase + "/bootstrap?pid=" + encodeURIComponent("1e03c4df-d487-4ab5-bd89-15b72b2e5d8a");
 
     fetch(BOOT, { method: "GET", credentials: "omit", cache: "no-store" })
       .then(function (r) { return (r && r.ok) ? r.json() : { allow: false }; })
