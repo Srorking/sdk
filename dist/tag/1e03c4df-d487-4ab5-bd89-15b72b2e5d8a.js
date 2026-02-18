@@ -25,16 +25,13 @@
     h.parentNode.insertBefore(s, h);
   }
 
-  // ✅ Gate BEFORE downloading SDK
+  // ✅ Gate BEFORE downloading SDK (bootstrap from CDN base, not collectUrl)
   try {
-    var collectOrigin = "";
-    try { collectOrigin = (new URL("https://collect-api-yzug.onrender.com/collect")).origin; } catch (e) {}
-    var boot = collectOrigin ? (collectOrigin + "/bootstrap?pid=" + encodeURIComponent("1e03c4df-d487-4ab5-bd89-15b72b2e5d8a")) : "";
+    if (!w.fetch) return;
 
-    // safest => no SDK download if fetch missing / boot invalid
-    if (!boot || !w.fetch) return;
+    var BOOT = base + "/bootstrap?pid=" + encodeURIComponent("1e03c4df-d487-4ab5-bd89-15b72b2e5d8a");
 
-    fetch(boot, { method: "GET", credentials: "omit", cache: "no-store" })
+    fetch(BOOT, { method: "GET", credentials: "omit", cache: "no-store" })
       .then(function (r) { return (r && r.ok) ? r.json() : { allow: false }; })
       .then(function (j) {
         if (j && j.allow === true) {
@@ -44,9 +41,9 @@
         }
       })
       .catch(function () {
-        // bootstrap failed => safest is do nothing
+        // bootstrap failed => do nothing
       });
   } catch (e) {
-    // safest => no SDK download
+    // do nothing
   }
 })();
