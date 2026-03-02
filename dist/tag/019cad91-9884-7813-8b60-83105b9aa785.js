@@ -30,33 +30,19 @@
 
     var collectUrlStr = "https://collect-api-yzug.onrender.com/collect";
 
-    // ✅ SAFEST: parse with URL (no regex)
     var bootUrl = "";
     try {
       var u = new URL(collectUrlStr);
-      // remove trailing /collect (or /collect/)
       u.pathname = u.pathname.replace(/\/collect\/?$/, "");
-      // ensure single slash
       if (!u.pathname.endsWith("/")) u.pathname += "/";
       bootUrl = u.origin + u.pathname + "bootstrap?pid=" + encodeURIComponent("019cad91-9884-7813-8b60-83105b9aa785");
     } catch (e) {
-      // invalid collectUrl => safest: don't load SDK
       return;
     }
 
     fetch(bootUrl, { method: "GET", credentials: "omit", cache: "no-store" })
       .then(function (r) { return (r && r.ok) ? r.json() : { allow: false }; })
-      .then(function (j) {
-        if (j && j.allow === true) {
-          loadSdk();
-        } else {
-          // Not allowed => do nothing (no SDK download)
-        }
-      })
-      .catch(function () {
-        // bootstrap failed => do nothing
-      });
-  } catch (e) {
-    // do nothing
-  }
+      .then(function (j) { if (j && j.allow === true) loadSdk(); })
+      .catch(function () {});
+  } catch (e) {}
 })();
